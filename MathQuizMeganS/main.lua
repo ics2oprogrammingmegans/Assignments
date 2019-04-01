@@ -36,6 +36,7 @@ local correctAnswer
 local textIntro
 local points = 0
 local gameOverObject 
+local youWinObject
 
 -- Add the local variables for the sound
 local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
@@ -44,8 +45,9 @@ local incorrectSound = audio.loadSound( "Sounds/wrongSound.mp3" )
 local incorrectSoundChannel
 local gameOverSound = audio.loadSound("Sounds/gameOverSound.wav")
 local gameOverSoundChannel
-local winSound = audio.loadSound( "Sounds/winSound.mp3")
-local winSoundChannel 
+local youWinSound = audio.loadSound( "Sounds/youWinSound.wav")
+local youWinSoundChannel 
+
 -- Create the local variables for the timer
 local totalSeconds = 10
 local secondsLeft = 10
@@ -61,9 +63,10 @@ local heart3
 ---------------------------------------------------------------
 -- Create the local functions --
 ---------------------------------------------------------------
+
 local function AskQuestion()
 	-- generate 2 random numbers between a max. and a min. number
-	randomNumber = math.random(1, 4)
+	randomNumber = math.random(1, 5)
 
 	numericField.text = ""
 
@@ -102,7 +105,7 @@ local function AskQuestion()
 		-- Create the question in the text object
 		questionObject.text = randomNumber5 .. " * " .. randomNumber6 .. " = "
 
-	else
+	elseif ( randomNumber == 4 ) then
 
 		randomNumber6 = math.random(1, 100) 
 		randomNumber7 = math.random(1, 100)
@@ -112,7 +115,14 @@ local function AskQuestion()
 		-- Create the question in the text object
 		questionObject.text = randomNumber7 .. " / " .. randomNumber8 .. " = "
 
-		
+	else 
+
+		randomNumber9 = math.random(1, 10)
+
+		correctAnswer = randomNumber9 * randomNumber9
+
+		-- Create the question in the text object
+		questionObject.text = randomNumber9 .. " * " .. randomNumber9 .. " = "	
 
 	end
 
@@ -157,11 +167,8 @@ local function UpdateTime()
 			gameOverObject.isVisible = true
 			numericField.isVisible = false
 			pointsObject.isVisible = false
-			heart2.isVisible = false
-			heart3.isVisible = false
 			gameOverSoundChannel = audio.play(gameOverSound)
-			AskQuestion()
-
+			
 		end
 	end
 end
@@ -221,18 +228,23 @@ local function NumericFieldListener( event )
 
 		elseif ( userAnswer ~= correctAnswer ) then
 
-				lives = lives -  1
-				incorrectText.isVisible = true
-				wrongRedCross.isVisible = true
-				correctCheckMark.isVisible = false
-				timer.performWithDelay(3000, HideIncorrect)
+			incorrectText.isVisible = true
+			wrongRedCross.isVisible = true
+			correctCheckMark.isVisible = false
+			timer.performWithDelay(3000, HideIncorrect)
 
 			incorrectSoundChannel = audio.play(incorrectSound) 
 
-		else ( points == 5) then 
-			
+		elseif ( points == 5) 
 
-
+			youWinObject.isVisible = true
+			heart1.isVisible = false
+			heart2.isVisible = false
+			heart3.isVisible = false
+			numericField.isVisible = false
+			pointsObject.isVisible = false
+			timer.cancel(countDownTimer)		
+			youWinSoundChannel	
 
 		end
 	end
@@ -241,6 +253,7 @@ end
 ---------------------------------------------------------
 -- Create the images/texts --
 ---------------------------------------------------------
+
 -- Displays a question and sets the colour
 questionObject = display.newText( "", display.contentWidth/3, display.contentHeight/2, nil, 70 )
 questionObject:setTextColor(155/255, 42/255, 198/255)
@@ -255,7 +268,7 @@ correctText:setTextColor(155/255, 42/255, 198/255)
 correctText.isVisible = false
 
 -- Create the clock text colour and text
-clockText = display.newText("", display.contentWidth*2/10, display.contentHeight*2/10, nil, 70)
+clockText = display.newText("Time remaining:" .. secondsLeft, display.contentWidth*2/10, display.contentHeight*2/10, nil, 70)
 clockText:setTextColor(0, 0, 0)
 
 -- Create the incorrect text object and make it invisible 
@@ -268,13 +281,19 @@ numericField = native.newTextField( display.contentWidth*2/3, display.contentHei
 numericField.inputType = "number"
 numericField.isVisible = true
 
+-- Add the event listener for the numeric field
+numericField:addEventListener("userInput", NumericFieldListener)
+
 gameOverObject = display.newImageRect("Images/gameOver.png", 768, 1024)
 gameOverObject.x = display.contentWidth/2
 gameOverObject.y = display.contentHeight/2
 gameOverObject.isVisible = false 
 
--- Add the event listener for the numeric field
-numericField:addEventListener("userInput", NumericFieldListener)
+-- Create the image for when the user wins
+youWinObject = display.newImageRect("Images/youWin.png", 768, 1024)
+youWinObject.x = display.contentWidth/2
+youWinObject.y = display.contentHeight/2
+youWinObject.isVisible = false
 
 -- Create the lives to display on the screen
 heart1 = display.newImageRect("Images/heart.png", 100, 100)
@@ -289,11 +308,12 @@ heart3 = display.newImageRect("Images/heart.png", 100, 100)
 heart3.x = display.contentWidth * 5 / 8
 heart3.y = display.contentHeight * 2 / 7
 
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------
 -- Function calls --
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------
 -- Call the function to ask the question
 AskQuestion()
 StartTimer()
+
 
 
