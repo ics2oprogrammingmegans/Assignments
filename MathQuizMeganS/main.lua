@@ -235,7 +235,7 @@ local function NumericFieldListener( event )
 
 			incorrectSoundChannel = audio.play(incorrectSound) 
 
-		elseif ( points == 5) 
+		elseif ( points == 5) then
 
 			youWinObject.isVisible = true
 			heart1.isVisible = false
