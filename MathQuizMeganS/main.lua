@@ -71,63 +71,74 @@ local function AskQuestion()
 	numericField.text = ""
 
 
-	if (randomNumber == 1) then
+		if (randomNumber == 1) then
 
-		randomNumber1 = math.random(1, 20)
-		randomNumber2 = math.random(1, 20)
 
-		correctAnswer = randomNumber1 + randomNumber2
+			randomNumber1 = math.random(1, 20)
+			randomNumber2 = math.random(1, 20)
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber1 .. " + " .. randomNumber2 .. " = "
+			correctAnswer = randomNumber1 + randomNumber2
 
-	elseif (randomNumber == 2 ) then
+			-- Create the question in the text object
+			questionObject.text = randomNumber1 .. " + " .. randomNumber2 .. " = "
 
-		randomNumber3 = math.random(1, 20)
-		randomNumber4 = math.random(1, 20)
+			AskQuestion()
 
-		if (randomNumber3 < randomNumber4) then
 
-		AskQuestion()
+		elseif (randomNumber == 2 ) then
 
-		correctAnswer = randomNumber3 - randomNumber4
+			randomNumber3 = math.random(1, 20)
+			randomNumber4 = math.random(1, 20)
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber3 .. " - " .. randomNumber4 .. " = "
+			correctAnswer = randomNumber3 - randomNumber4
 
-	elseif ( randomNumber == 3 ) then
+			-- Create the question in the text object
+			questionObject.text = randomNumber3 .. " - " .. randomNumber4 .. " = "
 
-		randomNumber5 = math.random(1, 10)
-		randomNumber6 = math.random(1, 10)
+			AskQuestion()
 
-		correctAnswer = randomNumber5 * randomNumber6
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber5 .. " * " .. randomNumber6 .. " = "
+		elseif ( randomNumber == 3 ) then
 
-	elseif ( randomNumber == 4 ) then
+			randomNumber5 = math.random(1, 10)
+			randomNumber6 = math.random(1, 10)
 
-		randomNumber6 = math.random(1, 100) 
-		randomNumber7 = math.random(1, 100)
+			correctAnswer = randomNumber5 * randomNumber6
 
-		correctAnswer = math.round(randomNumber7 / randomNumber8 * 100 / 100)
+			-- Create the question in the text object
+			questionObject.text = randomNumber5 .. " * " .. randomNumber6 .. " = "
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber7 .. " / " .. randomNumber8 .. " = "
+			AskQuestion()
 
-	else 
 
-		randomNumber9 = math.random(1, 10)
+		elseif ( randomNumber == 4 ) then
 
-		correctAnswer = randomNumber9 * randomNumber9
+			randomNumber6 = math.random(1, 100) 
+			randomNumber7 = math.random(1, 100)
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber9 .. " * " .. randomNumber9 .. " = "	
+			correctAnswer = math.round(randomNumber7 / randomNumber8 * 100 / 100)
 
+			-- Create the question in the text object
+			questionObject.text = randomNumber7 .. " / " .. randomNumber8 .. " = "
+
+			AskQuestion()
+
+
+		else 
+
+			randomNumber9 = math.random(1, 10)
+
+			correctAnswer = randomNumber9 * randomNumber9
+
+			-- Create the question in the text object
+			questionObject.text = randomNumber9 .. " * " .. randomNumber9 .. " = "	
+
+			AskQuestion()
+		end
 	end
-
 end
 
+--[[
 
 local function UpdateTime()
 
@@ -168,12 +179,12 @@ local function UpdateTime()
 			numericField.isVisible = false
 			pointsObject.isVisible = false
 			gameOverSoundChannel = audio.play(gameOverSound)
-			
+
 		end
 	end
 end
 
-
+--]]
 
 -- Function that calls the timer
 local function StartTimer()
@@ -184,7 +195,7 @@ local function StartTimer()
 	if (lives == 0) then
 	timer.cancel(countDownTimer)
 	
-	end
+	
 end
 
 local function HideCorrect()
@@ -198,7 +209,7 @@ local function HideIncorrect()
 	wrongRedCross.isVisible = false
 	AskQuestion()
 end	
-
+--[[
 local function NumericFieldListener( event )
 	
 	-- User begins editing "numericField"
@@ -235,7 +246,7 @@ local function NumericFieldListener( event )
 
 			incorrectSoundChannel = audio.play(incorrectSound) 
 
-		elseif ( points == 5) 
+		elseif ( points == 5 ) then
 
 			youWinObject.isVisible = true
 			heart1.isVisible = false
@@ -244,12 +255,12 @@ local function NumericFieldListener( event )
 			numericField.isVisible = false
 			pointsObject.isVisible = false
 			timer.cancel(countDownTimer)		
-			youWinSoundChannel	
+			youWinSoundChannel = audio.play(youWin)		
 
 		end
 	end
 end
-
+--]]
 ---------------------------------------------------------
 -- Create the images/texts --
 ---------------------------------------------------------
@@ -263,12 +274,12 @@ pointsObject:setTextColor(0, 0, 0)
 pointsObject.isVisible = true
 
 -- Create the correct text object and make it invisible 
-correctText = display.newText("Correct!", display.contentWidth/2, display.contentHeight*9/10, nil, 70 )
+correctText = display.newText("Number Correct!", display.contentWidth/2, display.contentHeight*9/10, nil, 70 )
 correctText:setTextColor(155/255, 42/255, 198/255)
 correctText.isVisible = false
 
 -- Create the clock text colour and text
-clockText = display.newText("Time remaining:" .. secondsLeft, display.contentWidth*2/10, display.contentHeight*2/10, nil, 70)
+clockText = display.newText("Time remaining: " .. secondsLeft, display.contentWidth*2/10, display.contentHeight*2/10, nil, 45)
 clockText:setTextColor(0, 0, 0)
 
 -- Create the incorrect text object and make it invisible 
@@ -314,6 +325,3 @@ heart3.y = display.contentHeight * 2 / 7
 -- Call the function to ask the question
 AskQuestion()
 StartTimer()
-
-
-
