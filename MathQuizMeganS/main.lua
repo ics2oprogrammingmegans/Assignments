@@ -2,7 +2,9 @@
 -- Title: MathQuiz
 -- Name: Megan.S
 -- Course: ICS20
--- This program 
+-- This program will ask the user a series of different math questions like addtion, subtraction
+-- multiplication, and division. If the user gets the question right then points will be added
+-- if the user gets the question wrong then a heart will be taken away
 -----------------------------------------------------------------------------------------
 
 -- Hide the status bar
@@ -86,14 +88,16 @@ local function AskQuestion()
 		randomNumber3 = math.random(1, 20)
 		randomNumber4 = math.random(1, 20)
 
-		if (randomNumber3 < randomNumber4) then
+		if (randomNumber3 > randomNumber4) then
 
-		AskQuestion()
+			AskQuestion()
 
-		correctAnswer = randomNumber3 - randomNumber4
+		elseif (randomNumber3 < randomNumber4) then
 
-		-- Create the question in the text object
-		questionObject.text = randomNumber3 .. " - " .. randomNumber4 .. " = "
+			correctAnswer = randomNumber3 - randomNumber4
+
+			-- Create the question in the text object
+			questionObject.text = randomNumber3 .. " - " .. randomNumber4 .. " = "
 
 	elseif ( randomNumber == 3 ) then
 
@@ -146,19 +150,23 @@ local function UpdateTime()
 		-- If there are no lives left, play a lose sound, show a you lose image
 		-- and cancel the timer remove the third heart by making it invisible
 
-		if (lives == 3) then
+		if ( lives == 3 ) then
 
 			heart3.isVisible = false
+			heart2.isVisible = true
+			heart1.isVisible = true
 			gameOverObject.isVisible = false
 			AskQuestion()
 
-		if (lives == 2) then
+		if ( lives == 2 ) then
 
 			heart2.isVisible = false
+			heart3.isVisible = false
+			heart1.isVisible = true
 			gameOverObject.isVisible = false
 			AskQuestion()
 
-		if (lives == 1 ) then
+		if ( lives == 1 ) then
 
 			heart1.isVisible = false   
 			heart2.isVisible = false
@@ -183,8 +191,6 @@ local function StartTimer()
 
 	if (lives == 0) then
 	timer.cancel(countDownTimer)
-	
-	end
 end
 
 local function HideCorrect()
@@ -226,7 +232,7 @@ local function NumericFieldListener( event )
 
 			correctSoundChannel = audio.play(correctSound)
 
-		elseif ( userAnswer ~= correctAnswer ) then
+		if ( userAnswer ~= correctAnswer ) then
 
 			incorrectText.isVisible = true
 			wrongRedCross.isVisible = true
@@ -235,7 +241,7 @@ local function NumericFieldListener( event )
 
 			incorrectSoundChannel = audio.play(incorrectSound) 
 
-		elseif ( points == 5) then
+		if ( points == 5 ) then
 
 			youWinObject.isVisible = true
 			heart1.isVisible = false
@@ -246,7 +252,7 @@ local function NumericFieldListener( event )
 			timer.cancel(countDownTimer)		
 			youWinSoundChannel	
 
-		end
+		end	
 	end
 end
 
@@ -314,6 +320,3 @@ heart3.y = display.contentHeight * 2 / 7
 -- Call the function to ask the question
 AskQuestion()
 StartTimer()
-
-
-
