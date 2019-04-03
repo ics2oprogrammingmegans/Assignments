@@ -13,42 +13,28 @@ display.setStatusBar(display.HiddenStatusBar)
 -- Sets the background colour
 display.setDefault("background", 1, 1, 204/255)
 
--- Create the pictures for the green check mark and the red cross
-local correctCheckMark = display.newImageRect("Images/checkmark.png", 200, 150)
-correctCheckMark.x = display.contentWidth/2
-correctCheckMark.y = display.contentHeight*7/10
-correctCheckMark.isVisible = false
-
-local wrongRedCross = display.newImageRect("Images/red_x.png", 200, 150 )
-wrongRedCross.x = display.contentWidth/2
-wrongRedCross.y = display.contentHeight*7/10
-wrongRedCross.isVisible = false 
-
 --------------------------------------------------------------------------------
 -- Create the local variables --
 --------------------------------------------------------------------------------
 local questionObject
 local correctText
 local incorrectText
+
 local numericField
+
 local randomNumber1
 local randomNumber2
+
 local userAnswer
 local correctAnswer
-local textIntro
+
 local points = 0
 local gameOverObject 
 local youWinObject
 
--- Add the local variables for the sound
-local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
-local correctSoundChannel
-local incorrectSound = audio.loadSound( "Sounds/wrongSound.mp3" )
-local incorrectSoundChannel
-local gameOverSound = audio.loadSound("Sounds/gameOverSound.wav")
-local gameOverSoundChannel
-local youWinSound = audio.loadSound( "Sounds/youWinSound.wav")
-local youWinSoundChannel 
+local correctCheckMark
+local wrongRedCross 
+
 
 -- Create the local variables for the timer
 local totalSeconds = 10
@@ -63,7 +49,21 @@ local heart2
 local heart3
 
 ---------------------------------------------------------------
--- Create the local functions --
+-- Create the sounds
+---------------------------------------------------------------
+
+-- Add the local variables for the sound
+local correctSound = audio.loadSound( "Sounds/correctSound.mp3" )
+local correctSoundChannel
+local incorrectSound = audio.loadSound( "Sounds/wrongSound.mp3" )
+local incorrectSoundChannel
+local gameOverSound = audio.loadSound("Sounds/gameOverSound.wav")
+local gameOverSoundChannel
+local youWinSound = audio.loadSound( "Sounds/youWinSound.wav")
+local youWinSoundChannel 
+
+---------------------------------------------------------------
+-- LOCAL FUNCTIONS
 ---------------------------------------------------------------
 
 local function AskQuestion()
@@ -98,6 +98,7 @@ local function AskQuestion()
 
 			-- Create the question in the text object
 			questionObject.text = randomNumber3 .. " - " .. randomNumber4 .. " = "
+		end
 
 	elseif ( randomNumber == 3 ) then
 
@@ -155,18 +156,18 @@ local function UpdateTime()
 			heart3.isVisible = false
 			heart2.isVisible = true
 			heart1.isVisible = true
-			gameOverObject.isVisible = false
+			
 			AskQuestion()
 
-		if ( lives == 2 ) then
+		elseif ( lives == 2 ) then
 
 			heart2.isVisible = false
 			heart3.isVisible = false
 			heart1.isVisible = true
-			gameOverObject.isVisible = false
+		
 			AskQuestion()
 
-		if ( lives == 1 ) then
+		elseif ( lives == 1 ) then
 
 			heart1.isVisible = false   
 			heart2.isVisible = false
@@ -176,6 +177,8 @@ local function UpdateTime()
 			numericField.isVisible = false
 			pointsObject.isVisible = false
 			gameOverSoundChannel = audio.play(gameOverSound)
+		elseif (lives == 0) then
+			timer.cancel(countDownTimer)
 			
 		end
 	end
@@ -189,8 +192,6 @@ local function StartTimer()
 	-- Create a countdown timer that loops infinitely
 	countDownTimer = timer.performWithDelay( 1000, UpdateTime, 0 )
 
-	if (lives == 0) then
-	timer.cancel(countDownTimer)
 end
 
 local function HideCorrect()
@@ -213,7 +214,7 @@ local function NumericFieldListener( event )
 		-- Clear text field
 		event.target.text = ""
 
-	elseif event.phase == "submitted" then
+	elseif (event.phase == "submitted") then
 
 
 		-- When the answer is submited (enter key is pressed) set user input to user's answer
@@ -226,13 +227,26 @@ local function NumericFieldListener( event )
 			points = points + 1
 			pointsObject.text = "Points: " .. points
 			correctText.isVisible = true
-			correctCheckMark.isVisible = true
-			wrongRedCross.isVisible = false
+			correctCheckMark.isVisible = true			
 			timer.performWithDelay(3000, HideCorrect)
 
 			correctSoundChannel = audio.play(correctSound)
 
-		if ( userAnswer ~= correctAnswer ) then
+			if ( points == 5 ) then
+
+				youWinObject.isVisible = true
+				heart1.isVisible = false
+				heart2.isVisible = false
+				heart3.isVisible = false
+				numericField.isVisible = false
+				pointsObject.isVisible = false
+				timer.cancel(countDownTimer)
+
+				youWinSoundChannel = audio.play(youWinSound)	
+
+			end	
+
+		else
 
 			incorrectText.isVisible = true
 			wrongRedCross.isVisible = true
@@ -240,25 +254,15 @@ local function NumericFieldListener( event )
 			timer.performWithDelay(3000, HideIncorrect)
 
 			incorrectSoundChannel = audio.play(incorrectSound) 
+		end
 
-		if ( points == 5 ) then
-
-			youWinObject.isVisible = true
-			heart1.isVisible = false
-			heart2.isVisible = false
-			heart3.isVisible = false
-			numericField.isVisible = false
-			pointsObject.isVisible = false
-			timer.cancel(countDownTimer)		
-			youWinSoundChannel	
-
-		end	
+		
 	end
 end
 
----------------------------------------------------------
--- Create the images/texts --
----------------------------------------------------------
+---------------------------------------------------------------
+-- OBJECT CREATION (IMAGES, TEXT, NUMERIC TEXTFIELDS, ETC.)
+---------------------------------------------------------------
 
 -- Displays a question and sets the colour
 questionObject = display.newText( "", display.contentWidth/3, display.contentHeight/2, nil, 70 )
@@ -274,7 +278,7 @@ correctText:setTextColor(155/255, 42/255, 198/255)
 correctText.isVisible = false
 
 -- Create the clock text colour and text
-clockText = display.newText("Time remaining:" .. secondsLeft, display.contentWidth*2/10, display.contentHeight*2/10, nil, 70)
+clockText = display.newText("Time remaining:" .. secondsLeft, display.contentWidth*2/10, display.contentHeight*2/10, nil, 48)
 clockText:setTextColor(0, 0, 0)
 
 -- Create the incorrect text object and make it invisible 
@@ -300,6 +304,17 @@ youWinObject = display.newImageRect("Images/youWin.png", 768, 1024)
 youWinObject.x = display.contentWidth/2
 youWinObject.y = display.contentHeight/2
 youWinObject.isVisible = false
+
+-- Create the pictures for the green check mark and the red cross
+correctCheckMark = display.newImageRect("Images/checkmark.png", 200, 150)
+correctCheckMark.x = display.contentWidth/2
+correctCheckMark.y = display.contentHeight*7/10
+correctCheckMark.isVisible = false
+
+wrongRedCross = display.newImageRect("Images/red_x.png", 200, 150 )
+wrongRedCross.x = display.contentWidth/2
+wrongRedCross.y = display.contentHeight*7/10
+wrongRedCross.isVisible = false 
 
 -- Create the lives to display on the screen
 heart1 = display.newImageRect("Images/heart.png", 100, 100)
