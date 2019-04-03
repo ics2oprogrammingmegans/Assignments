@@ -194,8 +194,7 @@ local function StartTimer()
 
 	if (lives == 0) then
 	timer.cancel(countDownTimer)
-	
-	
+		
 end
 
 local function HideCorrect()
