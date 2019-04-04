@@ -112,8 +112,8 @@ local function AskQuestion()
 
 	elseif ( randomNumber == 4 ) then
 
-		randomNumber6 = math.random(1, 100) 
-		randomNumber7 = math.random(1, 100)
+		randomNumber7 = math.random(1, 100) 
+		randomNumber8 = math.random(1, 100)
 
 		correctAnswer = math.round(randomNumber7 / randomNumber8 * 100 / 100)
 
@@ -153,7 +153,7 @@ local function UpdateTime()
 
 		if ( lives == 3 ) then
 
-			heart3.isVisible = false
+			heart3.isVisible = true
 			heart2.isVisible = true
 			heart1.isVisible = true
 			
@@ -161,24 +161,30 @@ local function UpdateTime()
 
 		elseif ( lives == 2 ) then
 
-			heart2.isVisible = false
 			heart3.isVisible = false
+			heart2.isVisible = true
 			heart1.isVisible = true
 		
 			AskQuestion()
 
 		elseif ( lives == 1 ) then
 
-			heart1.isVisible = false   
-			heart2.isVisible = false
-			heart3.isVisible = false 
+			heart3.isVisible = false
+			heart2.isVisible = false   
+			heart1.isVisible = true
+
+			AskQuestion()
+
+		elseif (lives == 0) then
+
+			heart3.isVisible = false
+			heart2.isVisible = false   
+			heart1.isVisible = false
 			timer.cancel(countDownTimer)
 			gameOverObject.isVisible = true
 			numericField.isVisible = false
 			pointsObject.isVisible = false
 			gameOverSoundChannel = audio.play(gameOverSound)
-		elseif (lives == 0) then
-			timer.cancel(countDownTimer)
 			
 		end
 	end
@@ -201,6 +207,7 @@ local function HideCorrect()
 end	
 
 local function HideIncorrect()
+
 	incorrectText.isVisible = false
 	wrongRedCross.isVisible = false
 	AskQuestion()
@@ -247,7 +254,7 @@ local function NumericFieldListener( event )
 			end	
 
 		else
-
+			lives = lives - 1
 			incorrectText.isVisible = true
 			wrongRedCross.isVisible = true
 			correctCheckMark.isVisible = false
