@@ -22,7 +22,7 @@ local Platelogo = display.newImage("Images/CompanyLogo.png", 0, 0 )
 
 -- Set the (x,y) cordinates of the plate logo
 
-Platelogo.x = display.contentWidth/2
+Platelogo.x = display.contentWidth
 Platelogo.y = display.contentHeight/2
 
 Platelogo:scale(0.25, 0.25)
@@ -33,3 +33,4 @@ local CrashSound = audio.loadSound( "Sounds/CrashSound.mp3")
 local CrashSoundChannel
 
 
+transition.moveTo( Platelogo, {x = 0, y = display.contentHeight/2 , time = 2000})
