@@ -50,10 +50,10 @@ Platelogo.alpha = Platelogo.alpha - 0.01
 
 -- Play the crash sound
 timer.performWithDelay(150, Sound)
+
 --[[
 -- Have the logo fade out 
 transition.fadeOut( Platelogo, { time = 4500 } )
-
 --]]
 -----------------------------------------------------------------------------------------
 
